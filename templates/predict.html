@@ -1,0 +1,398 @@
+{% extends "base.html" %}
+
+{% block title %}Fraud Detection - UPI Fraud Detection System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        UPI Transaction Fraud Detection
+                    </h2>
+                    <p class="mt-2 mb-0 text-white-50">Enter transaction details for comprehensive fraud analysis</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% if not result %}
+                    <form method="POST" id="fraudDetectionForm">
+                        <div class="row">
+                            <!-- UPI Details Section -->
+                            <div class="col-md-6">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-user me-2"></i>UPI Details
+                                </h5>
+                                
+                                <div class="form-group">
+                                    <label for="sender_upi" class="form-label">
+                                        <i class="fas fa-arrow-up me-1"></i>Sender UPI ID
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="sender_upi" name="sender_upi" 
+                                               placeholder="sender@paytm" required pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+"
+                                               title="Please enter a valid UPI ID (e.g., user123@paytm)">
+                                    </div>
+                                    <small class="text-muted">Format: username@provider (e.g., john@paytm)</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="receiver_upi" class="form-label">
+                                        <i class="fas fa-arrow-down me-1"></i>Receiver UPI ID
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user-check"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="receiver_upi" name="receiver_upi" 
+                                               placeholder="receiver@googlepay" required pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+"
+                                               title="Please enter a valid UPI ID (e.g., merchant@googlepay)">
+                                    </div>
+                                    <small class="text-muted">Format: username@provider (e.g., shop@googlepay)</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Transaction Details Section -->
+                            <div class="col-md-6">
+                                <h5 class="text-success mb-3">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Transaction Details
+                                </h5>
+                                
+                                <div class="form-group">
+                                    <label for="amount" class="form-label">
+                                        <i class="fas fa-rupee-sign me-1"></i>Transaction Amount (₹)
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₹</span>
+                                        <input type="number" class="form-control" id="amount" name="amount" 
+                                               placeholder="1000.00" required min="1" max="100000" step="0.01">
+                                    </div>
+                                    <small class="text-muted">Amount between ₹1 to ₹1,00,000</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="transaction_mode" class="form-label">
+                                        <i class="fas fa-cogs me-1"></i>Transaction Mode
+                                    </label>
+                                    <select class="form-select" id="transaction_mode" name="transaction_mode" required>
+                                        <option value="">Select Transaction Mode</option>
+                                        <option value="UPI_PIN">UPI PIN</option>
+                                        <option value="BIOMETRIC">Biometric Authentication</option>
+                                        <option value="QR_CODE">QR Code Scan</option>
+                                        <option value="BANK_TRANSFER">Bank Transfer</option>
+                                        <option value="MOBILE_BANKING">Mobile Banking</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row">
+                            <!-- Timing Details Section -->
+                            <div class="col-md-6">
+                                <h5 class="text-warning mb-3">
+                                    <i class="fas fa-clock me-2"></i>Timing Details
+                                </h5>
+                                
+                                <div class="form-group">
+                                    <label for="transaction_time" class="form-label">
+                                        <i class="fas fa-clock me-1"></i>Transaction Time
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                        <input type="time" class="form-control" id="transaction_time" name="transaction_time" required>
+                                    </div>
+                                    <small class="text-muted">Select the time when transaction occurred</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="day_of_week" class="form-label">
+                                        <i class="fas fa-calendar me-1"></i>Day of Week
+                                    </label>
+                                    <select class="form-select" id="day_of_week" name="day_of_week" required>
+                                        <option value="">Select Day</option>
+                                        <option value="Monday">Monday</option>
+                                        <option value="Tuesday">Tuesday</option>
+                                        <option value="Wednesday">Wednesday</option>
+                                        <option value="Thursday">Thursday</option>
+                                        <option value="Friday">Friday</option>
+                                        <option value="Saturday">Saturday</option>
+                                        <option value="Sunday">Sunday</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Account & Behavior Details Section -->
+                            <div class="col-md-6">
+                                <h5 class="text-info mb-3">
+                                    <i class="fas fa-user-cog me-2"></i>Account & Behavior
+                                </h5>
+                                
+                                <div class="form-group">
+                                    <label for="transaction_frequency" class="form-label">
+                                        <i class="fas fa-chart-bar me-1"></i>Daily Transaction Frequency
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-hashtag"></i>
+                                        </span>
+                                        <input type="number" class="form-control" id="transaction_frequency" name="transaction_frequency" 
+                                               placeholder="5" required min="0" max="100">
+                                    </div>
+                                    <small class="text-muted">Average transactions per day (0-100)</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="account_age_days" class="form-label">
+                                        <i class="fas fa-birthday-cake me-1"></i>Account Age (Days)
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <input type="number" class="form-control" id="account_age_days" name="account_age_days" 
+                                               placeholder="365" required min="1" max="3650">
+                                    </div>
+                                    <small class="text-muted">Age of sender's account in days (1-3650)</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Analyze Transaction for Fraud
+                            </button>
+                        </div>
+                        
+                        <!-- Loading Spinner -->
+                        <div class="loading-spinner" id="loadingSpinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Analyzing...</span>
+                            </div>
+                            <p class="mt-2">Analyzing transaction patterns...</p>
+                        </div>
+                    </form>
+                    
+                    {% else %}
+                    <!-- Results Section -->
+                    <div class="prediction-result {{ 'fraud-detected' if result.prediction == 'FRAUD' else 'legitimate-transaction' }}">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <i class="fas fa-{{ 'exclamation-triangle' if result.prediction == 'FRAUD' else 'check-circle' }} fa-4x"></i>
+                            </div>
+                            <div class="col-md-10">
+                                <h3 class="mb-2">
+                                    {% if result.prediction == 'FRAUD' %}
+                                        🚨 FRAUD DETECTED
+                                    {% else %}
+                                        ✅ LEGITIMATE TRANSACTION
+                                    {% endif %}
+                                </h3>
+                                <p class="mb-1 fs-5">
+                                    <strong>Fraud Probability:</strong> {{ result.probability }}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Confidence Level:</strong> {{ result.explanation.confidence }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Detailed Analysis -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>Transaction Summary
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Sender:</strong></td>
+                                            <td>{{ result.transaction_data.sender_upi }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Receiver:</strong></td>
+                                            <td>{{ result.transaction_data.receiver_upi }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Amount:</strong></td>
+                                            <td>₹{{ "%.2f"|format(result.transaction_data.amount) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Mode:</strong></td>
+                                            <td>{{ result.transaction_data.transaction_mode }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Time:</strong></td>
+                                            <td>{{ result.transaction_data.transaction_time }} on {{ result.transaction_data.day_of_week }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Account Age:</strong></td>
+                                            <td>{{ result.transaction_data.account_age_days }} days</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>Risk Analysis
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if result.explanation.risk_factors %}
+                                        <p><strong>Identified Risk Factors:</strong></p>
+                                        <ul class="list-unstyled">
+                                            {% for factor in result.explanation.risk_factors %}
+                                                <li class="mb-2">
+                                                    <i class="fas fa-warning text-warning me-2"></i>
+                                                    {{ factor }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="text-success">
+                                            <i class="fas fa-check-circle me-2"></i>
+                                            No significant risk factors detected
+                                        </p>
+                                    {% endif %}
+                                    
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <strong>Analysis:</strong> This prediction is based on advanced machine learning models 
+                                            analyzing 15+ transaction parameters including timing patterns, amount analysis, 
+                                            account behavior, and historical fraud indicators.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('predict') }}" class="btn btn-primary me-3">
+                            <i class="fas fa-plus me-2"></i>Analyze Another Transaction
+                        </a>
+                        <a href="{{ url_for('analytics') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-chart-line me-2"></i>View Analytics
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Example Transactions -->
+{% if not result %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-lightbulb me-2"></i>Example Transactions for Testing
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-success">Legitimate Transaction Example:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Sender:</strong> john.doe@paytm</li>
+                        <li><strong>Receiver:</strong> grocery.store@googlepay</li>
+                        <li><strong>Amount:</strong> ₹500</li>
+                        <li><strong>Mode:</strong> UPI_PIN</li>
+                        <li><strong>Time:</strong> 14:30 (2:30 PM)</li>
+                        <li><strong>Day:</strong> Tuesday</li>
+                        <li><strong>Frequency:</strong> 5 transactions/day</li>
+                        <li><strong>Account Age:</strong> 365 days</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-danger">Suspicious Transaction Example:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Sender:</strong> newuser@phonepe</li>
+                        <li><strong>Receiver:</strong> unknown@ybl</li>
+                        <li><strong>Amount:</strong> ₹75000</li>
+                        <li><strong>Mode:</strong> QR_CODE</li>
+                        <li><strong>Time:</strong> 23:45 (11:45 PM)</li>
+                        <li><strong>Day:</strong> Sunday</li>
+                        <li><strong>Frequency:</strong> 25 transactions/day</li>
+                        <li><strong>Account Age:</strong> 15 days</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('fraudDetectionForm').addEventListener('submit', function(e) {
+    // Show loading spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+    
+    // Add form validation
+    const senderUpi = document.getElementById('sender_upi').value;
+    const receiverUpi = document.getElementById('receiver_upi').value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    
+    // Validate UPI format
+    const upiPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/;
+    if (!upiPattern.test(senderUpi)) {
+        e.preventDefault();
+        alert('Please enter a valid sender UPI ID format');
+        document.getElementById('loadingSpinner').style.display = 'none';
+        return;
+    }
+    
+    if (!upiPattern.test(receiverUpi)) {
+        e.preventDefault();
+        alert('Please enter a valid receiver UPI ID format');
+        document.getElementById('loadingSpinner').style.display = 'none';
+        return;
+    }
+    
+    // Validate amount
+    if (amount < 1 || amount > 100000) {
+        e.preventDefault();
+        alert('Amount must be between ₹1 and ₹1,00,000');
+        document.getElementById('loadingSpinner').style.display = 'none';
+        return;
+    }
+});
+
+// Set current time as default
+document.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('transaction_time').value = `${hours}:${minutes}`;
+    
+    // Set current day
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentDay = days[now.getDay()];
+    document.getElementById('day_of_week').value = currentDay;
+});
+</script>
+{% endblock %}

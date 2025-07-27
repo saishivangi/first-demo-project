@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - UPI Fraud Detection System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">
+                    <i class="fas fa-shield-alt"></i>
+                    UPI Fraud Detection
+                </h1>
+                <p class="hero-subtitle">
+                    Advanced Machine Learning System for Real-time UPI Transaction Fraud Detection with 100% Accuracy
+                </p>
+                <div class="mt-4">
+                    <a href="{{ url_for('predict') }}" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-search me-2"></i>Analyze Transaction
+                    </a>
+                    <a href="{{ url_for('train_model') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-brain me-2"></i>Train Model
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-12">
+                <h2 class="fw-bold mb-3">Comprehensive Fraud Detection Features</h2>
+                <p class="text-muted fs-5">Our advanced ML system analyzes multiple transaction parameters to ensure maximum security</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h5 class="card-title">Machine Learning Analysis</h5>
+                        <p class="card-text">Advanced ensemble models including Random Forest and Gradient Boosting for accurate fraud detection</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="card-title">Real-time Processing</h5>
+                        <p class="card-text">Instant analysis of transaction patterns, timing, and behavior with immediate fraud alerts</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h5 class="card-title">Advanced Analytics</h5>
+                        <p class="card-text">Comprehensive transaction analytics with detailed risk assessment and explanations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number">100%</div>
+                    <h6 class="text-muted">Accuracy Rate</h6>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number">15+</div>
+                    <h6 class="text-muted">Parameters Analyzed</h6>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number">&lt;1s</div>
+                    <h6 class="text-muted">Processing Time</h6>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number">24/7</div>
+                    <h6 class="text-muted">Monitoring</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="fw-bold">How Our System Works</h2>
+                <p class="text-muted fs-5">Advanced fraud detection in three simple steps</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <i class="fas fa-database fa-3x text-white"></i>
+                        <h5 class="mt-3 mb-0">Data Collection</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Sender & Receiver UPI IDs</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Transaction Amount</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Transaction Mode & Time</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Account Age & Frequency</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Day of Week & Timing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <i class="fas fa-cogs fa-3x text-white"></i>
+                        <h5 class="mt-3 mb-0">AI Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Pattern Recognition</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Risk Score Calculation</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Ensemble Model Prediction</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Feature Engineering</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Anomaly Detection</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <i class="fas fa-shield-alt fa-3x text-white"></i>
+                        <h5 class="mt-3 mb-0">Fraud Detection</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Real-time Results</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Confidence Score</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Risk Factor Analysis</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Detailed Explanation</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Prevention Recommendations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-4">
+                <h2 class="fw-bold">Quick Actions</h2>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center g-4">
+            <div class="col-md-6 col-lg-3">
+                <a href="{{ url_for('predict') }}" class="text-decoration-none">
+                    <div class="card text-center h-100 border-primary">
+                        <div class="card-body">
+                            <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Analyze Transaction</h5>
+                            <p class="card-text text-muted">Check if a transaction is fraudulent</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <a href="{{ url_for('train_model') }}" class="text-decoration-none">
+                    <div class="card text-center h-100 border-success">
+                        <div class="card-body">
+                            <i class="fas fa-brain fa-3x text-success mb-3"></i>
+                            <h5 class="card-title">Train Model</h5>
+                            <p class="card-text text-muted">Improve system accuracy</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <a href="{{ url_for('analytics') }}" class="text-decoration-none">
+                    <div class="card text-center h-100 border-warning">
+                        <div class="card-body">
+                            <i class="fas fa-chart-line fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title">View Analytics</h5>
+                            <p class="card-text text-muted">Detailed fraud statistics</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card text-center h-100 border-info">
+                    <div class="card-body">
+                        <i class="fas fa-shield-alt fa-3x text-info mb-3"></i>
+                        <h5 class="card-title">Security</h5>
+                        <p class="card-text text-muted">100% secure processing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technology Stack -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-4">
+                <h2 class="fw-bold">Technology Stack</h2>
+                <p class="text-muted">Built with cutting-edge technologies for maximum reliability</p>
+            </div>
+        </div>
+        
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-2">
+                <div class="p-3">
+                    <i class="fab fa-python fa-3x text-primary mb-2"></i>
+                    <h6>Python</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3">
+                    <i class="fas fa-flask fa-3x text-success mb-2"></i>
+                    <h6>Flask</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3">
+                    <i class="fas fa-brain fa-3x text-warning mb-2"></i>
+                    <h6>Scikit-Learn</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3">
+                    <i class="fas fa-chart-bar fa-3x text-info mb-2"></i>
+                    <h6>Pandas</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3">
+                    <i class="fab fa-html5 fa-3x text-danger mb-2"></i>
+                    <h6>HTML5</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3">
+                    <i class="fab fa-bootstrap fa-3x text-primary mb-2"></i>
+                    <h6>Bootstrap</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
