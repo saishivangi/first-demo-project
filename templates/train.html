@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Train Model - UPI Fraud Detection System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 class="mb-0">
+                        <i class="fas fa-brain me-2"></i>
+                        Train Machine Learning Model
+                    </h2>
+                    <p class="mt-2 mb-0 text-white-50">Improve fraud detection accuracy with advanced training</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% if not trained %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Training Information:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>The system uses ensemble machine learning models (Random Forest + Gradient Boosting)</li>
+                            <li>Training generates synthetic UPI transaction data with realistic fraud patterns</li>
+                            <li>Larger datasets improve model accuracy but take longer to process</li>
+                            <li>Recommended: Start with 10,000 samples for optimal balance</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="POST" id="trainingForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="sample_size" class="form-label">
+                                        <i class="fas fa-database me-1"></i>Training Dataset Size
+                                    </label>
+                                    <select class="form-select" id="sample_size" name="sample_size" required>
+                                        <option value="1000">1,000 samples (Quick test - 30 seconds)</option>
+                                        <option value="5000">5,000 samples (Fast training - 1 minute)</option>
+                                        <option value="10000" selected>10,000 samples (Recommended - 2 minutes)</option>
+                                        <option value="25000">25,000 samples (High accuracy - 5 minutes)</option>
+                                        <option value="50000">50,000 samples (Maximum accuracy - 10 minutes)</option>
+                                    </select>
+                                    <small class="text-muted">More samples = better accuracy but longer training time</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-cogs me-1"></i>Training Features
+                                    </label>
+                                    <div class="bg-light p-3 rounded">
+                                        <small>
+                                            <strong>The model analyzes:</strong><br>
+                                            • UPI ID patterns & providers<br>
+                                            • Transaction amounts & timing<br>
+                                            • Account age & frequency<br>
+                                            • Risk score calculations<br>
+                                            • Weekend/night time patterns
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg px-5">
+                                <i class="fas fa-play me-2"></i>
+                                Start Training Process
+                            </button>
+                        </div>
+                        
+                        <!-- Progress Section -->
+                        <div id="trainingProgress" class="mt-4" style="display: none;">
+                            <div class="text-center">
+                                <div class="spinner-border text-success mb-3" role="status">
+                                    <span class="visually-hidden">Training...</span>
+                                </div>
+                                <h5>Training Machine Learning Models...</h5>
+                                <p class="text-muted">This may take several minutes depending on dataset size</p>
+                                
+                                <div class="progress mt-3">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                                         role="progressbar" style="width: 0%" id="progressBar">
+                                        <span id="progressText">0%</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <small class="text-muted" id="statusText">Initializing training process...</small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    {% else %}
+                    <!-- Training Results -->
+                    <div class="alert alert-success text-center">
+                        <i class="fas fa-check-circle fa-3x mb-3"></i>
+                        <h4>Training Completed Successfully!</h4>
+                        <p class="mb-0">Your fraud detection model has been trained and is ready for use.</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white text-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-chart-line me-2"></i>Training Results
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if results %}
+                                        {% for model_name, accuracy in results.items() %}
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span><strong>{{ model_name.replace('_', ' ').title() }}:</strong></span>
+                                            <span class="badge bg-success fs-6">{{ "%.2f"|format(accuracy * 100) }}%</span>
+                                        </div>
+                                        {% endfor %}
+                                        
+                                        <hr>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span><strong>Overall Accuracy:</strong></span>
+                                            <span class="badge bg-primary fs-6">
+                                                {{ "%.2f"|format((results.values() | list | sum / results.values() | list | length) * 100) }}%
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white text-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>Model Information
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            <strong>Random Forest:</strong> Ensemble of decision trees
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            <strong>Gradient Boosting:</strong> Sequential learning model
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            <strong>Feature Engineering:</strong> 15+ derived features
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            <strong>Cross-validation:</strong> 80/20 train/test split
+                                        </li>
+                                        <li class="mb-0">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            <strong>Ensemble Voting:</strong> Combined predictions
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('predict') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-search me-2"></i>Test the Model
+                        </a>
+                        <a href="{{ url_for('train_model') }}" class="btn btn-outline-success">
+                            <i class="fas fa-redo me-2"></i>Train Again
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model Architecture Information -->
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-sitemap me-2"></i>Machine Learning Architecture
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6 class="text-primary">Data Processing</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Synthetic data generation</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Feature engineering</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Data normalization</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Label encoding</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-success">Model Training</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Random Forest (100 trees)</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Gradient Boosting (100 estimators)</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Cross-validation</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Hyperparameter tuning</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-warning">Prediction</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Ensemble voting</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Probability calculation</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Risk factor analysis</li>
+                        <li><i class="fas fa-arrow-right text-muted me-2"></i>Explanation generation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('trainingForm').addEventListener('submit', function(e) {
+    // Show progress
+    document.getElementById('trainingProgress').style.display = 'block';
+    
+    // Simulate progress for better UX
+    let progress = 0;
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const statusText = document.getElementById('statusText');
+    
+    const messages = [
+        "Generating synthetic transaction data...",
+        "Applying feature engineering...",
+        "Training Random Forest model...",
+        "Training Gradient Boosting model...",
+        "Validating model performance...",
+        "Finalizing ensemble model..."
+    ];
+    
+    let messageIndex = 0;
+    const interval = setInterval(() => {
+        if (progress < 90) {
+            progress += Math.random() * 15;
+            if (progress > 90) progress = 90;
+            
+            progressBar.style.width = progress + '%';
+            progressText.textContent = Math.round(progress) + '%';
+            
+            if (messageIndex < messages.length && progress > (messageIndex + 1) * 15) {
+                statusText.textContent = messages[messageIndex];
+                messageIndex++;
+            }
+        }
+    }, 1000);
+    
+    // The form will submit and the server will handle the actual training
+    // The interval will be cleared when the page refreshes
+});
+
+// Show estimated time based on sample size
+document.getElementById('sample_size').addEventListener('change', function() {
+    const size = parseInt(this.value);
+    let timeEstimate = '';
+    
+    if (size <= 1000) timeEstimate = '~30 seconds';
+    else if (size <= 5000) timeEstimate = '~1 minute';
+    else if (size <= 10000) timeEstimate = '~2 minutes';
+    else if (size <= 25000) timeEstimate = '~5 minutes';
+    else timeEstimate = '~10 minutes';
+    
+    // Update the option text to show time estimate
+    this.selectedOptions[0].text = this.selectedOptions[0].text.split(' (')[0] + ' (' + timeEstimate + ')';
+});
+</script>
+{% endblock %}
